@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .container {
+        width: 700px;
+        position: absolute;
+        top: 100px;
+        left: 100px;
+      }
+      .header {
+        height: 20px;
+        background: red;
+        cursor: move;
+      }
+      .container {
+        height: 400px;
+        background: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header"></div>
+      <div class="content"></div>
+    </div>
+    <script>
+      const container = document.querySelector(".container");
+      const header = document.querySelector(".header");
+
+      header.onmousedown = function (e) {
+        // 鼠标按下的位置
+        const x = e.clientX;
+        const y = e.clientY;
+
+        // 视口宽高
+        const vWidth = document.documentElement.clientWidth;
+        const vHeiht = document.documentElement.clientHeight;
+        
+        // 元素宽高
+        const eWidth = container.offsetWidth
+        const eHeight = container.offsetHeight
+
+        // 最大坐标
+        const maxX = vWidth - eWidth
+        const maxY = vHeiht - eHeight
+
+        // 元素的坐标
+        const { left: ex, top: ey } = container.getBoundingClientRect();
+
+        // 鼠标按下后,监听整个屏幕的鼠标移动
+        window.onmousemove = function (e) {
+          const disX = e.clientX - x;
+          const disY = e.clientY - y;
+          let left =  ex + disX
+          let top = ey + disY
+          if (left < 0) {
+            left = 0
+          }
+          if (left > maxX) {
+            left = maxX
+          }
+
+          if (top < 0) {
+            top = 0
+          }
+
+          if (top > maxY) {
+            top = maxY
+          }
+          container.style.left = left + "px";
+          container.style.top =  top  + "px";
+        };
+
+        // 鼠标抬起后, 不再监听鼠标移动和抬起
+        window.onmouseup = function () {
+          window.onmousemove = null;
+          window.onmouseup = null;
+        };
+      };
+    </script>
+  </body>
+</html>

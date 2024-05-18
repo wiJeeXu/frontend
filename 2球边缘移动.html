@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .ball {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: red;
+        position: fixed;
+        top: 100px;
+        left: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="ball"></div>
+    <script>
+      // 球向右下运动, 到边缘反弹
+      const ball = document.querySelector(".ball");
+
+      // 视口宽度
+      const vWidth = document.documentElement.clientWidth;
+      const vHeight = document.documentElement.clientHeight;
+
+      const eW = ball.offsetWidth;
+      const wH = ball.offsetHeight;
+
+      const maxW = vWidth - eW;
+      const maxH = vHeight - eW;
+
+      let disX = 4;
+      let disY = 4;
+
+      function getRandom(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+      }
+
+      function changeBg() {
+        const r = getRandom(0, 256)
+        const g= getRandom(0, 256)
+        const b = getRandom(0, 256)
+        ball.style.background = `rgb(${r}, ${g}, ${b})`
+      }
+      setInterval(function () {
+        const { left: eX, top: eY } = ball.getBoundingClientRect();
+        let left = eX + disX;
+        let top = eY + disY;
+
+        if (left > maxW) {
+          left = maxW;
+          disX = -disX;
+          changeBg()
+        }
+
+        if (left < 0) {
+          left = 0;
+          disX = -disX;
+          changeBg()
+        }
+
+        if (top > maxH) {
+          top = maxH;
+          disY = -disY;
+          changeBg()
+        }
+
+        if (top < 0) {
+          top = 0;
+          disY = -disY;
+          changeBg()
+        }
+
+        ball.style.left = left + "px";
+        ball.style.top = top + "px";
+      }, 20);
+    </script>
+  </body>
+</html>
