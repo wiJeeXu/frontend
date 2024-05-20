@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .container {
+        background: skyblue;
+      }
+      .container::after {
+        content: '';
+        display: block;
+        clear: both;
+      }
+      .title {
+        float: left;
+        border-right: 1px solid #f2f2f2;
+        font-size: 16px;
+        margin-top: 4px;
+        padding-right: 20px;
+      }
+      ul {
+        list-style: none;
+        float: left;
+        height: 30px;
+        overflow: hidden;
+        font-size: 12px;
+        margin-left: 12px;
+      }
+      li {
+        height: 30px;
+        line-height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="title">hello</h1>
+      <ul>
+        <li>1. 好，到这里，我们已经成功得到了这么一个效果</li>
+        <li>2. 此时，我们再看整个效果</li>
+        <li>3. 在白色元素的边缘处</li>
+        <li>4. 阻止高斯模糊的向外扩散</li>
+      </ul>
+    </div>
+    <script>
+      const ul = document.querySelector("ul");
+      function firstItemClone() {
+        const firstItem = ul.children[0];
+        const copyItem = firstItem.cloneNode(true);
+        ul.appendChild(copyItem);
+      }
+      firstItemClone();
+      let index = 0;
+      const duration = 2000;
+      const itemHeight = 30;
+      const ulHeight = ul.children.length * itemHeight
+      setInterval(moveNext, duration);
+      function moveNext() {
+        const totalDuration = 500
+        const duration = 20;
+        const times = totalDuration / duration
+        let from = index * itemHeight
+        index++
+        const to = index * itemHeight
+        const dis = (to - from) / times
+      const timerId =  setInterval(function() {
+           from += dis
+           if (from >= to) {
+            clearInterval(timerId)
+            if (index === ul.children.length - 1) {
+                from = 0
+                index = 0
+            }
+           }
+           ul.scrollTop = from
+        }, duration)
+      }
+    </script>
+  </body>
+</html>
