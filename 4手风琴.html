@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            padding-left: 100px;
+        }
+
+        h2 {
+            font-size: 100%;
+            font-style: normal;
+        }
+       
+        ul{
+            list-style: none;
+        }
+        h2~ul>li {
+            padding-left: 30px;
+            height: 30px;
+            line-height: 30px;
+        }
+
+        .menu {
+            margin-bottom: 30px;
+            background-color: red;
+        }
+        .subMenu {
+            height: 0;
+            overflow: hidden;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <ul>
+            <li class="menu">
+                <h2>菜单1</h2>
+                <ul class="subMenu" status="closed">
+                    <li>菜单1</li>
+                    <li>菜单2</li>
+                    <li>菜单3</li>
+                    <li>菜单4</li>
+                </ul>
+            </li>
+            <li class="menu">
+                <h2>菜单2</h2>
+                <ul class="subMenu" status="closed">
+                    <li>菜单1</li>
+                    <li>菜单2</li>
+                    <li>菜单3</li>
+                    <li>菜单4</li>
+                </ul>
+            </li>
+            <li class="menu">
+                <h2>菜单3</h2>
+                <ul class="subMenu" status="closed">
+                    <li>菜单1</li>
+                    <li>菜单2</li>
+                    <li>菜单3</li>
+                    <li>菜单4</li>
+                </ul>
+            </li>
+            <li class="menu">
+                <h2>菜单4</h2>
+                <ul class="subMenu" status="closed">
+                    <li>菜单1</li>
+                    <li>菜单2</li>
+                    <li>菜单3</li>
+                    <li>菜单4</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <script>
+     function createAnimation({
+        from,
+        to,
+        totalMS = 1000,
+        duration = 20,
+        onMove,
+        onEnd
+     }) {
+        // 总次数
+       const times =  totalMS / duration
+       let curTime = 0 // 当前次数
+       const dis = (to - from) / times
+       const timerId = setInterval(() => {
+          if (curTime >= times) {
+            clearInterval(timerId)
+            from = to
+            onEnd && onEnd(from)
+            return
+          }
+          curTime++
+          from+=dis
+          onMove && onMove(from)
+       }, duration)
+     }
+
+     const h2s = document.querySelectorAll('.menu > h2')
+     const itemHeight = 30
+     for (let i = 0; i < h2s.length; i++) {
+        h2s[i].onclick = function() {
+            toggleMenu(this)
+        }
+     }
+
+     function toggleMenu(context) {
+
+        const subMenu =  context.nextElementSibling
+        const children = subMenu.children
+        if (subMenu.getAttribute('status') === 'moving')  {
+            return
+        }
+
+        if (subMenu.getAttribute('status') === 'opened')  {
+            closeMenu(subMenu,children)
+        }
+
+        if (subMenu.getAttribute('status') === 'closed')  {
+            document.querySelectorAll('.subMenu').forEach(ele => {
+                if (ele.getAttribute('status') === 'opened') {
+                    closeMenu(ele,ele.children)
+                }
+            })
+            openMenu(subMenu, children)
+        }
+
+     }
+
+     function openMenu(subMenu, children) {
+        createAnimation({
+          from: 0,
+          to: children.length * itemHeight,
+          totalMS: 500,
+          onMove: function(n) {
+            subMenu.setAttribute('status', 'moving')
+            subMenu.style.height = n + 'px'
+          },
+          onEnd: function() {
+            subMenu.setAttribute('status', 'opened')
+          }
+        })
+     }
+     function closeMenu(subMenu, children) {
+        createAnimation({
+          from: children.length * itemHeight,
+          to: 0,
+          totalMS: 500,
+          onMove: function(n) {
+            subMenu.setAttribute('status', 'moving')
+            subMenu.style.height = n + 'px'
+          },
+          onEnd: function() {
+            subMenu.setAttribute('status', 'closed')
+            subMenu.style.height = 0
+          }
+        })
+     }
+    </script>
+</body>
+</html>
